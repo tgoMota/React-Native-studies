@@ -17,3 +17,5 @@ const RootStack = createStackNavigator({
 const App = createAppContainer(RootStack);
 
 export default App;
+
+//Testando
