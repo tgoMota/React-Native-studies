@@ -10,6 +10,7 @@ export default class Horse extends Piece{
     }
 
     possiblesMoves = (board) => {
+        board[this.row][this.column].moving = true;
         const rows = [this.row+1,this.row-1,this.row+2, this.row-2];
         const cols = [this.column+1,this.column-1,this.column+2, this.column-2];
 

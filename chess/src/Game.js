@@ -25,9 +25,9 @@ export default class Game extends Component {
     }
 
     turnVerify = (row, column) => { //whites plays on white turn ... 
-        if(this.state.board[row][column].piece.color == 'white' && this.state.turnsWhite) return true;
-        else if(this.state.board[row][column].piece.color == 'black' && !this.state.turnsWhite) return true;
-        else return false;
+        if(this.state.board[row][column].piece.color == 'white' && this.state.turnsWhite) return true; //white plays
+        else if(this.state.board[row][column].piece.color == 'black' && !this.state.turnsWhite) return true; //black plays
+        else return false; //its not your turn, be honest
     }
 
     onOpenField = (row,column) => { //open square
@@ -36,20 +36,20 @@ export default class Game extends Component {
         var pieceMoving = this.state.pieceMoving;
         var turnsWhite = this.state.turnsWhite;
         var pieceKilled = null;
-        if(!this.state.hasMove) {
-            if(!board[row][column].hasPiece || !this.turnVerify(row,column)) return null;
-            board = board[row][column].piece.possiblesMoves(board);
-            pieceMoving = board[row][column].piece;
-            hasMove = true;
-        }else{
-            if(board[row][column].hasPiece && !pieceMoving.enemy(board,row,column)){
-                board = resetBoard(board);
+        if(!this.state.hasMove) { //there wasn't piece in movement before open this field
+            if(!board[row][column].hasPiece || !this.turnVerify(row,column)) return null; //if the player is trying to move a enemy player or a invalid square
+            board = board[row][column].piece.possiblesMoves(board); //search for the possible moves of the choosen piece
+            pieceMoving = board[row][column].piece; //now, the choosen piece is in moviment
+            hasMove = true; //indicate that the player is moving one piece
+        }else{ //there was a piece in moviment before open this field
+            if(board[row][column].hasPiece && !pieceMoving.enemy(board,row,column)){ //can't kill the ally piece //nothing to do here
+                board = resetBoard(board); //reset the board to normal state
                 this.setState({board,hasMove});
             }
-            if(row == pieceMoving.row && column == pieceMoving.column || !board[row][column].able) return null;
-            if(!board[row][column].hasPiece || pieceMoving.enemy(board, row, column)) [ board, pieceKilled ] = pieceMoving.move(board, row, column);
+            if(row == pieceMoving.row && column == pieceMoving.column || !board[row][column].able) return null; //move to the self place or invalid place
+            if(!board[row][column].hasPiece || pieceMoving.enemy(board, row, column)) [ board, pieceKilled ] = pieceMoving.move(board, row, column); //enemy or there's no piece on that place
+            board = resetBoard(board); //movement done, refresh the board
             turnsWhite = !turnsWhite; //swipe turn
-            board = resetBoard(board);
         }
         this.refreshScore(pieceKilled);
         this.setState({board, hasMove, pieceMoving , turnsWhite});
@@ -60,9 +60,8 @@ export default class Game extends Component {
     }
 
     refreshScore = (pieceKilled) => {
-        // Alert.alert('pieceKilled: ' + pieceKilled);
-        if(pieceKilled == null) return;
-        if(pieceKilled.color == 'black'){
+        if(pieceKilled == null) return; //doesn't need refresh // no pieces were killed
+        if(pieceKilled.color == 'black'){ //black pieces killeds on scoreWhite // white pieces killeds on scoreBlack
              var scoreWhite = this.state.scoreWhite;
              scoreWhite.push(pieceKilled);
              this.setState({scoreWhite});
@@ -75,9 +74,7 @@ export default class Game extends Component {
     }
 
     render(){
-        var turn = '';
-        if(this.state.turnsWhite) turn = 'white';
-        else turn = 'black';
+        const turn = this.state.turnsWhite ? 'white' : 'black';
         return (
             <View>
                 <Score pieces={this.state.scoreBlack}></Score>

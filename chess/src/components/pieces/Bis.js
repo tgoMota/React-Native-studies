@@ -6,6 +6,7 @@ export default class Bis extends Piece {
     }
     possiblesMoves(board){
         //SE
+        board[this.row][this.column].moving = true;
         for(var i = this.row+1, j = this.column+1 ; i < 8 && j < 8 ; ++i, ++j){
             if(this.ableToMove(board, i, j)) {
                 board[i][j].able = true;

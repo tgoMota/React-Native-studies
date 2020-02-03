@@ -5,6 +5,7 @@ export default class Queen extends Piece{
         super(type,row,column,color);
     }
     possiblesMoves = (board) => {
+        board[this.row][this.column].moving = true;
         //SE
         for(var i = this.row+1, j = this.column+1 ; i < 8 && j < 8 ; ++i, ++j){
             if(this.ableToMove(board, i, j)) {

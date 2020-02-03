@@ -5,6 +5,7 @@ export default class Tower extends Piece{
         super(type,row, column, color);
     }
     possiblesMoves = (board) => {
+        board[this.row][this.column].moving = true;
         //N
         for(var i = this.row-1, j = this.column ; i >= 0 ; --i){
             if(this.ableToMove(board, i, j)) {

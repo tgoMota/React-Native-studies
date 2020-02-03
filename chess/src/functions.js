@@ -22,7 +22,8 @@ const createBoard = (rows, columns) => {
                 colorSquare, 
                 piece, 
                 hasPiece, //if has piece on the square or not
-                able: false //square open for an possible move
+                able: false, //square open for an possible move
+                moving: false
             }
         })
     })
@@ -68,6 +69,7 @@ const resetBoard = board => {
     for(var i = 0; i < 8 ; ++i){
         for(var j = 0; j < 8 ; ++j){
             board[i][j].able = false;
+            board[i][j].moving = false;
         }
     }
     return board;

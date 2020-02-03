@@ -6,6 +6,7 @@ export default class Pawn extends Piece{
         pawnSuper = false; //move for any side
     }
     possiblesMoves = (board) => {
+        board[this.row][this.column].moving = true;
         if(this.color == 'black'){
             if(this.ableToMove(board, this.row+1, this.column) && !board[this.row+1][this.column].hasPiece) {
                 board[this.row+1][this.column].able = true;

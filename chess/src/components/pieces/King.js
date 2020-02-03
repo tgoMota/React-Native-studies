@@ -5,6 +5,7 @@ export default class King extends Piece{
         super(type,row, column, color);
     }
     possiblesMoves = (board) => {
+        board[this.row][this.column].moving = true;
         const rows = [this.row-1, this.row, this.row+1];
         const cols = [this.column-1, this.column ,this.column+1];
         rows.forEach((r,row) => {
