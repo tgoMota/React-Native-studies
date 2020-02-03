@@ -34,11 +34,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginTop: '5%',
-    //marginLeft: '35%',
     textAlign: 'center',
     fontWeight: 'bold',
     borderBottomColor: 'blue'
-    //fontColor: '#0000FF'
   },
   buttonNewGame:{
     marginTop: 200

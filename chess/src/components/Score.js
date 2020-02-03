@@ -8,10 +8,9 @@ export default props => {
     pcs[0] = props.pieces.slice(0,8);
     pcs[1] = props.pieces.slice(8);
 
-    Alert.alert('rows = ' + pcs.length + ' cols = ' + pcs[0].length)
-    const rows = props.pieces.map((x,i) =>{
+    const rows = pcs.map((x,i) =>{
         const columns = x.map((y,j) => {
-            if(y != 0 ) return <Piece colorPiece={y.color} piece={y.type} key={j}/>
+            return <Piece style={styles.pic} colorPiece={y.color} piece={y.type} key={j}/>
         })
         return <View key={i} style={{flexDirection: 'row'}}>{columns}</View>
     })
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
         height: (Dimensions.get('window').height - 9*params.blockSize)/2
     },
     pic: {
-        width: params.blockSize,
-        height: params.blockSize,
+        width: params.blockSize/5,
+        height: params.blockSize/5,
     }
 })

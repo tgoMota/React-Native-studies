@@ -11,23 +11,14 @@ export default props => {
         if(colorSquare == 'black') styleField.push(styles.square1);
         else styleField.push(styles.square2);
     }
-    if(hasPiece){        
-        return (
-            <TouchableWithoutFeedback onPress={props.onOpen} onLongPress={props.onSelect}>
-                <View style={styleField}>
-                    <Piece colorPiece={piece.color} piece={piece.type}></Piece>
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }else{
-        return (
-            <TouchableWithoutFeedback onPress={props.onOpen} onLongPress={props.onSelect}>
-                <View style={styleField}>
-                    
-                </View>
-            </TouchableWithoutFeedback>
-        )
-    }
+    const pieceView = hasPiece? <Piece colorPiece={piece.color} piece={piece.type}></Piece> : null
+    return (
+        <TouchableWithoutFeedback onPress={props.onOpen} onLongPress={props.onSelect}>
+            <View style={styleField}>
+                {pieceView}
+            </View>
+        </TouchableWithoutFeedback>
+    )
 }
 
 const styles = StyleSheet.create({
