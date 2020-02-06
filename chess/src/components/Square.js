@@ -6,12 +6,10 @@ import Piece from './Piece'
 export default props => {
     const { hasPiece, colorSquare, piece, able, moving } = props
     var styleField =  [styles.field];
-    //if(able) styleField.push(styles.able);
-    if(moving) styleField.push(styles.moving);
-    else{
-        if(colorSquare == 'black') styleField.push(styles.square1);
-        else styleField.push(styles.square2);
-    }
+    if(colorSquare == 'black') styleField.push(styles.square1);
+    else styleField.push(styles.square2);
+    if(moving || able) styleField.push(styles.able);
+    
     const pieceView = hasPiece? <Piece colorPiece={piece.color} piece={piece.type}></Piece> : null
     return (
         <TouchableWithoutFeedback onPress={props.onOpen} onLongPress={props.onSelect}>
@@ -32,9 +30,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#59380d'
     },
     able : {
-        backgroundColor: 'blue'
+        // backgroundColor: 'blue',
+        borderWidth: 1.5,
+        borderColor: 'white'
     },
     moving: {
-        backgroundColor: 'red'
+        // backgroundColor: 'red'
     }
 })

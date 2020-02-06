@@ -14,8 +14,7 @@ export default class Game extends Component {
     createState = () => {
         return {
             board: createChessBoard(8,8),
-            wonPlayer1: false,
-            wonPlayer2: false,
+            whoWon: 'null',
             hasMove: false,
             pieceMoving: null,
             turnsWhite: true,
@@ -30,12 +29,52 @@ export default class Game extends Component {
         else return false; //its not your turn, be honest
     }
 
+    check = () => { //check if the king is on danger ( check )
+        var board = cloneBoard(this.state.board), lastTurn = this.state.turnsWhite ? 'white' : 'black';
+        var [ rowKing, columnKing ] = this.searchTheKing(lastTurn); //position of the king
+        for(var i = 0; i < 8 ; ++i){
+            for(var j = 0; j < 8 ; ++j){
+                var y = board[i][j];
+                if(y.hasPiece && y.piece.color == lastTurn) board = y.piece.possiblesMoves(board);
+                if(board[rowKing][columnKing].able){
+                    Alert.alert('Check'); //one king is in danger
+                    return null; //end function
+                }
+            }
+        }
+    }
+
+    restartGame = () => {
+        this.setState({
+            board: createChessBoard(8,8),
+            whoWon: 'null',
+            hasMove: false,
+            pieceMoving: null,
+            turnsWhite: true,
+            scoreBlack: Array(0),
+            scoreWhite: Array(0)
+        });
+    }
+
+    searchTheKing = (colorKing) => {
+        var board = cloneBoard(this.state.board);
+        for(var i = 0; i < 8 ; ++i){
+            for(var j = 0; j < 8 ; ++j){
+                var y = board[i][j];
+                if(y.hasPiece && y.piece.color != colorKing && y.piece.type == 'king'){
+                    return [y.piece.row, y.piece.column];
+                }
+            }
+        }
+    }
+
     onOpenField = (row,column) => { //open square
         var board = cloneBoard(this.state.board);
         var hasMove = false;
         var pieceMoving = this.state.pieceMoving;
-        var turnsWhite = this.state.turnsWhite;
+        var turnsWhite = this.state.turnsWhite, turn = this.state.turnsWhite;
         var pieceKilled = null;
+        var moved = false;
         if(!this.state.hasMove) { //there wasn't piece in movement before open this field
             if(!board[row][column].hasPiece || !this.turnVerify(row,column)) return null; //if the player is trying to move a enemy player or a invalid square
             board = board[row][column].piece.possiblesMoves(board); //search for the possible moves of the choosen piece
@@ -47,30 +86,45 @@ export default class Game extends Component {
                 this.setState({board,hasMove});
             }
             if(row == pieceMoving.row && column == pieceMoving.column || !board[row][column].able) return null; //move to the self place or invalid place
-            if(!board[row][column].hasPiece || pieceMoving.enemy(board, row, column)) [ board, pieceKilled ] = pieceMoving.move(board, row, column); //enemy or there's no piece on that place
+            if(!board[row][column].hasPiece || pieceMoving.enemy(board, row, column)){ //enemy or there's no piece on that place
+                 [ board, pieceKilled ] = pieceMoving.move(board, row, column); 
+                 moved = true; //one piece moved
+            }
             board = resetBoard(board); //movement done, refresh the board
             turnsWhite = !turnsWhite; //swipe turn
         }
         this.refreshScore(pieceKilled);
         this.setState({board, hasMove, pieceMoving , turnsWhite});
-      }
+        if(moved) this.check();
+    }
       
     onSelectField = (row, column) => {
         const board = cloneBoard(this.state.board);
     }
 
+    thereIsAWinner = (pieceKilled) => {
+        if(pieceKilled.type == 'king'){
+            if(pieceKilled.color == 'white'){
+                Alert.alert('Black won the game');
+                this.setState({whoWon:'black'});
+            }else{
+                Alert.alert('White won the game');
+                this.setState({whoWon:'white'});
+            }
+            this.restartGame();
+            return true;
+        }
+        return false;
+    }
+
     refreshScore = (pieceKilled) => {
         if(pieceKilled == null) return; //doesn't need refresh // no pieces were killed
-        if(pieceKilled.color == 'black'){ //black pieces killeds on scoreWhite // white pieces killeds on scoreBlack
-             var scoreWhite = this.state.scoreWhite;
-             scoreWhite.push(pieceKilled);
-             this.setState({scoreWhite});
-        }
-        else {
-            var scoreBlack = this.state.scoreBlack;
-            scoreBlack.push(pieceKilled);
-            this.setState({scoreBlack});
-        }
+        var scoreWhite = this.state.scoreWhite;
+        var scoreBlack = this.state.scoreBlack;
+        if(pieceKilled.color == 'black') scoreWhite.push(pieceKilled); //black pieces killeds on scoreWhite 
+        else scoreBlack.push(pieceKilled);// white pieces killeds on scoreBlack
+        this.setState({scoreWhite, scoreBlack}); //refresh score in the view
+        this.thereIsAWinner(pieceKilled); //check if any player won the game
     }
 
     render(){

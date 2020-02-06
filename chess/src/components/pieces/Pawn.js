@@ -10,7 +10,7 @@ export default class Pawn extends Piece{
         if(this.color == 'black'){
             if(this.ableToMove(board, this.row+1, this.column) && !board[this.row+1][this.column].hasPiece) {
                 board[this.row+1][this.column].able = true;
-                if(board[this.row][this.column].piece.moves == 0){
+                if(this.moves == 0){ //first move
                     if(this.ableToMove(board, this.row+2, this.column)) board[this.row+2][this.column].able = true;
                 }
             }
@@ -19,7 +19,7 @@ export default class Pawn extends Piece{
         }else{ //white
             if(this.ableToMove(board, this.row-1, this.column) && !board[this.row-1][this.column].hasPiece) {
                 board[this.row-1][this.column].able = true;
-                if(board[this.row][this.column].piece.moves == 0){
+                if(this.moves == 0){ //first move
                     if(this.ableToMove(board, this.row-2, this.column)) board[this.row-2][this.column].able = true;
                 }
             }
